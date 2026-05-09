@@ -12,6 +12,17 @@ cancel.addEventListener("click",()=>{
   modal.style.display ="none";
 })
 
+const piechart = new Chart(piectx, {
+  type: "pie",
+  data: {
+    labels: ["Food", "Travel", "Shopping", "Bills", "Entertainment", "Health", "Travel", "Education", "Other"],
+    datasets: [{
+      data: [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      backgroundColor: ["#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#14b8a6", "#f97316", "#ec4899", "#6b7280"]
+    }]
+  }
+});
+
 const addexpense= document.getElementById("addexpen");
 const tablebody =document.getElementById("tabbody");
 const expense = document.getElementById("expen");
@@ -37,20 +48,29 @@ addexpense.addEventListener("submit", (event) => {
         <td>${category}</td>
         <td>$${expenseamount}</td>
         <td>${date}</td>
-        <td><button> DELETE </button></td>
+        <td><button class="del-btn"> DELETE </button></td>
     `;
 
     tablebody.appendChild(newrow);
     const deletebtn = newrow.querySelector("button");
     deletebtn.addEventListener("click",()=>{
+      total = total - Number(expenseamount);
+      totalexpense.innerText="$"+ total;
       newrow.remove();
     });
-
-    addexpense.reset();
 
     modal.style.display = "none";
     total = total+ Number(expenseamount);
     totalexpense.innerText = "$" + total;
+
+    const categoryIndex = piechart.data.labels.indexOf(category);
+      if(categoryIndex !== -1){
+    piechart.data.datasets[0].data[categoryIndex] += Number(expenseamount);
+    piechart.update();
+      }
+   addexpense.reset();
+
+
 
 
 });
@@ -69,13 +89,4 @@ new Chart(linectx,{
         
     }
 })
-new Chart(piectx, {
-  type: "pie",
-  data: {
-    labels: ["Food", "Travel", "Shopping", "Bills", "Entertainment", "Health", "Travel", "Education", "other"],
-    datasets: [{
-      data: [3000, 2000, 4000, 2500, 1800, 2200, 3500, 1500, 1200],
-      backgroundColor: ["#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#14b8a6", "#f97316", "#ec4899", "#6b7280"]
-    }]
-  }
-});
+
